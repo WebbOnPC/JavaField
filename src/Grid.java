@@ -605,7 +605,7 @@ public class Grid
 
         public void statsDisplay()
     {
-        System.out.println("Player " + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins $" + playerCoin);
+        System.out.println("Player   " + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins: $" + playerCoin);
     }
 
     public void statsDisplayPC()

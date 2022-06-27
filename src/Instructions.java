@@ -1,6 +1,7 @@
 public class Instructions {
     public static void instructions()
     {
+        System.out.println("-------------------------------------------------------");
         System.out.println("-----------------Welcome to Java Field-----------------");
         System.out.println("-------------------------------------------------------");
         System.out.println("OBJECTIVE:");

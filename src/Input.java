@@ -2,6 +2,9 @@ import java.util.Scanner;
 
 public class Input
 {
+    /*
+    * Not yet implemented
+     */
     public Input()
     {
 

@@ -1,9 +1,7 @@
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class Field
+public class Runtime
 {
     private Instructions instructions;
     private Player player;
@@ -15,7 +13,7 @@ public class Field
     static ArrayList<Integer> playerPositions = new ArrayList<Integer>();
     static ArrayList<Integer> pcPositions = new ArrayList<Integer>();
 
-    public Field()
+    public Runtime()
     {
         name = "";
         instructions = new Instructions();
@@ -24,7 +22,7 @@ public class Field
         file = new ReadFile();
     }
 
-    public Field(Player player, Instructions instructions, Grid grids, ReadFile file)
+    public Runtime(Player player, Instructions instructions, Grid grids, ReadFile file)
     {
         this.instructions = instructions;
         this.player = player;
@@ -34,7 +32,7 @@ public class Field
 
     public static void main(String[] args)
     {
-         Field start = new Field();
+         Runtime start = new Runtime();
         /*
         ReadFile r = new ReadFile();
 

@@ -5,7 +5,7 @@ public class Instructions {
         System.out.println("------------------Welcome to Java Field------------------");
         System.out.println("---------------------------------------------------------");
         System.out.println("OBJECTIVE:");
-        System.out.println("Destroy all 3 of your opponents hearts.\n");
+        System.out.println("Destroy all 3 of your opponents Lives.\n");
         System.out.println("RULES:");
         System.out.println("Both Players will be given an Attack Damage of 5, and Defence of 7.");
         System.out.println("You will receive $3000 Coins.");
@@ -21,8 +21,8 @@ public class Instructions {
                            "          To capture a Grid Spot, the player will roll a die\n"+
                            "          providing you with a number between 1 and 6, the computer \n"+ 
                            "          will roll 2 dice. ");
-        System.out.println("\n   3. Direct Strike at Heart ");
-        System.out.println("          To direct strike a heart, you must capture enough \n"+
+        System.out.println("\n   3. Direct Strike at Life");
+        System.out.println("          To direct strike a Life, you must capture enough \n"+
                            "          grid spaces to complete a straight path to the end of the field");
         System.out.println("---------------------------------------------------------");
         System.out.println("---------------------------------------------------------");

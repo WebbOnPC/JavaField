@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class Grid
 {
-    private static int gridSize;
+    private int gridSize;
     public char gameGrid[][];
     int playerPos = 0;
     private int size;
@@ -22,6 +22,12 @@ public class Grid
     private Random rand;
 
     private boolean colMade;
+
+    // Stats
+    private int captured; // captured grids
+    private int lost;     // Grids lost
+    private int capturedPC; // PC captured grids
+    private int lostPC; // PC grids lost
 
   //  private int howManyPs;
 
@@ -121,26 +127,26 @@ public class Grid
         return "";
     }
 
-    public String checkWinner()
+    public String checkWinner() // Check if we have a winner
     {   System.out.println("checking winner");
         if(pcHealth == 0)
         {
-            System.out.println("YOU ARE WINNER");
+            System.out.println("YOU ARE WINNER!");
             return "Congratulations you win!";
         }
         else if (playerHealth == 0)
         {
-            System.out.println("YOU SUCK");
+            System.out.println("You lost!");
             return "The Computer wins!";
         }
         return "";
     }
 
-    public void computerCapture()
+    public void computerCapture() // Computer Move - Capture grid
     {
         diceRoll();
         tempAtt = die1 + die2 + die3 + pcAtt;
-        System.out.println("They're attempting to Capture"); 
+        System.out.println("They're attempting to Capture.");
         System.out.println("They rolled: " + die1 + ", " + die2 + " & " + die3 + ", their Attack total is: " + tempAtt); 
         tempDef = dieDef1 + dieDef2 + pcDef;
         System.out.println("Your roll: " + dieDef1 + ", & " + dieDef2 + ", your total Defence is: " + tempDef); 
@@ -154,17 +160,17 @@ public class Grid
                 pcPosY = rand.nextInt(gridSize)*2;
             }
             placePiece(gameGrid, pcPosX, pcPosY, "pc");
-            System.out.println("Computer captured a Grid");
+            System.out.println("Computer captured a Grid!");
         }
         else
             System.out.println("Capture failed!"); 
     }
 
-    public void computerStrike()
+    public void computerStrike() // Computer Move - Strike Health
     {
          System.out.println("PC STRIKE");
          checkPath();
-         if(colMade == true)
+         if(colMade == true) // If player has completed a path
         {
             playerHealth = playerHealth - 1;
             System.out.println("They had successfully Striked");
@@ -174,18 +180,23 @@ public class Grid
             System.out.println("They failed to Strike your Lives");
     }
 
-    public void computerSabotage()
+    public void computerSabotage() // Computer Move - Sabotage
     {
-        int turnSab = rand.nextInt(11) + 1;
+        int turnSab = rand.nextInt(10) + 1; // Select random number to make move
+
+        if(colMade == true) // If Player has a completed path, attack path.
+        {
+            turnSab = 10;
+            colMade = false;
+        }
+
         switch(turnSab)
         {   
             case 1:
             case 2:
             case 3:
-            case 4:
-                low = 500;
-                high = 1500;
-                int cost = rand.nextInt(high-low) + low;
+            case 4: // Attacking attack
+                int cost = rand.nextInt(1000) + 500;
                 pcCoin = pcCoin - cost;
                 System.out.println("They're reducing your Attack");
                 playerAtt = playerAtt - 2;
@@ -194,23 +205,22 @@ public class Grid
             case 5:
             case 6:
             case 7:
-            case 8: 
-                low = 500;
-                high = 1500;
-                cost = rand.nextInt(high-low) + low;
+            case 8: // Attacking Defence
+                cost = rand.nextInt(1000) + 500;
                 pcCoin = pcCoin - cost;
                 System.out.println("They're reducing your Defence");
                 playerDef = playerDef - 2;
                 System.out.println("Your Defence: " + playerDef );
                 break;
             case 9:
-            case 10:
-                low = 1000;
-                high = 2500;
-                cost = rand.nextInt(high-low) + low;
-                 if(pcCoin > cost)
+            case 10: // Attack Players Grid
+                cost = rand.nextInt(1500) + 1000;
+                if(pcCoin > cost && ((pcCoin - cost) >= 0)) // If computer has funds
                 {
+                    System.out.println("They're capturing your Grid!");
+
                     pcCoin = pcCoin - cost;
+                    System.out.println("Costing them: " + pcCoin);
 
                     int pcPosX = rand.nextInt(gridSize)*2;
                     int pcPosY = rand.nextInt(gridSize)*2;
@@ -219,22 +229,23 @@ public class Grid
                         pcPosX = rand.nextInt(gridSize)*2;
                         pcPosY = rand.nextInt(gridSize)*2;
                     }
+                    System.out.println("Computer captured a Grid.");
+                    ++lost;
                     placePiece(gameGrid, pcPosX, pcPosY, "pc");
-                    System.out.println("Computer captured a Grid");
                 }
                 else
-                    System.out.println("Sabotage failed!"); 
+                    computerCapture(); // Tries to capture instead
                 break; 
             default:
-                System.out.println("Select an option between 1 and 3"); 
+                computerSabotage();
         }
     }
 
-    public void computerTurn()
+    public void computerTurn() // Computer Move
     {
         int turn = rand.nextInt(4-1) + 1;
         boolean turnOne = true;
-        if(turnOne == true)
+        if(turnOne == true) // If turn 1, capture grid
         {
             turnOne = false;
             turn = 1;
@@ -252,11 +263,11 @@ public class Grid
                 computerSabotage();
                 break;
             default:
-                System.out.println("Invalid Option");
+                computerTurn();
         }
     }
 
-    public void diceRoll()
+    public void diceRoll() // Dice
     {
         die1 = rand.nextInt(high-low) + low;
         die2 = rand.nextInt(high-low) + low;
@@ -265,7 +276,7 @@ public class Grid
         dieDef2 = rand.nextInt(high-low) + low;
     }
 
-    public void inputGridSize() // Sets Grid Size
+    public void inputGridSize() // Set Grid Size
     {
         Validation valid = new Validation();
         System.out.println("Input a Grid Size from 3 - 10:");
@@ -279,27 +290,49 @@ public class Grid
         {
             System.out.println("Grid Size: " + gridSize + " x " + gridSize);
         }
+        /*
+        boolean flag = true;
+        while ((gridSize < 3 ) || (gridSize > 10))
+        {
+            do
+            {
+                try
+                {
+                    System.out.println("Input a Grid Size from 3 - 10:");
+                    gridSize = Integer.parseInt(console.nextLine().trim());
+                    flag = false;
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Integer only.");
+                }
+            }while(flag);
+        }
+        System.out.println("Grid Size: " + gridSize + "x" + gridSize + "\n");
+
+         */
     }
 
-    public void inputPlayerTurn() 
+    public void inputPlayerTurn() // Player Move
     {
         System.out.println("Press 1: Capture a Grid.");
         System.out.println("Press 2: Sabotage the enemy.");
         System.out.println("Press 3: Direct Strike a heart.");
         int playerTurn = console.nextInt();
-        if (playerTurn == 1) // Capture Grid
-        {   
-           moveCapture();
-        } 
-        else if (playerTurn == 2) // Sabotage the Enemy
-        {
-            moveSabotage();
-        } 
-        else if(playerTurn == 3) // Direct Strike to Heart
-        {
-            moveStrike();
-        }else
-            System.out.println("Enter a valid move:");
+        switch(playerTurn) {
+            case 1: // Capture Grid
+                moveCapture();
+                break;
+            case 2: // Sabotage the Enemy
+                moveSabotage();
+                break;
+            case 3: // Direct Strike to Heart
+                moveStrike();
+                break;
+            default: // Else
+                inputPlayerTurn();
+                break;
+        }
     }
 
     public void makeGrid() // Assign values to make matrix
@@ -333,7 +366,7 @@ public class Grid
         printGridBoard(gameGrid);
     }
    
-    public void moveCapture() // MOVE - Capture a grid.
+    public void moveCapture() // Player Move - Capture a grid.
     {
         diceRoll();
         tempAtt = die1 + die2 + die3 + playerAtt;
@@ -386,7 +419,7 @@ public class Grid
             System.out.println("Their Defence was too strong!");
         }
     }
-    public void moveSabotage() // MOVE - Sabotage computer
+    public void moveSabotage() // Player Move - Sabotage computer
     {
         System.out.println("Press 1: Decrease the opponent's Attack by 2.");
         System.out.println("Press 2: Decrease the opponent's Defence by 2.");
@@ -394,138 +427,169 @@ public class Grid
         int sabMove = console.nextInt();
         switch(sabMove)
         {
-            case 1: 
-                low = 500;
-                high = 1500;
-                int cost = rand.nextInt(high-low) + low;
-                System.out.println("This will cost you: $" + cost); 
-                boolean valid = false;
-                do {
-                    System.out.print("Do you accept? Yes or No: ");
-                    String ans = console.next();
-                    switch (ans)
-                    {
-                        case "Y":
-                        case "y":
-                        case "YES":
-                        case "Yes":
-                            playerCoin = playerCoin - cost;
-                            System.out.println("New coin total: $" + playerCoin); 
-                            pcAtt = pcAtt - 2;
-                            System.out.println("Opponents Attack: " + pcAtt); 
-                            valid = true;
-                            break;
-                        case "n":
-                        case "N":
-                        case "NO":
-                        case "No":
-                            System.out.println("You selected No.");
-                            valid = true;
-                            break;
-                        default:
-                            System.out.println("Invalid Option.");
-                    }
-                }while(! valid);
+            case 1:
+                moveSabotage1(); // Option 1
                 break;
             case 2: 
-                valid = false;
-                low = 500;
-                high = 1500;
-                cost = rand.nextInt(high-low) + low;
-                System.out.println("This will cost you: $" + cost); 
-                do 
-                {
-                    System.out.print("Do you accept? Yes or No: ");
-                    String ans2 = console.next();
-                    switch (ans2)
-                    {
-                        case "Y":
-                        case "y":
-                        case "YES":
-                        case "Yes":
-                            playerCoin = playerCoin - cost;
-                            System.out.println("New coin total: $" + playerCoin); 
-                            pcDef = pcDef - 2;
-                            System.out.println("Opponents Defence: " + pcDef );
-                            valid = true;
-                            break;
-                        case "n":
-                        case "N":
-                        case "NO":
-                        case "No":
-                            System.out.println("You selected No.");
-                            //inputPlayerTurn();
-                            valid = true;
-                            break;
-                        default:
-                            System.out.println("Invalid Option");
-                    }
-                }while(! valid);
+                moveSabotage2(); // Option 2
                 break;
             case 3:
-                valid = false;
-                low = 1000;
-                high = 2500;
-                cost = rand.nextInt(high-low) + low;
-                System.out.println("This will cost you: $" + cost); 
-                do 
-                {
-                    System.out.print("Do you accept? Yes or No: ");
-                    String ans3 = console.next();
-                    switch (ans3)
-                    {
-                        case "Y":
-                        case "y":
-                        case "YES":
-                        case "Yes":
-                            playerCoin = playerCoin - cost;
-                            System.out.println("New coin total: $" + playerCoin); 
-                            //select coorinates 
-                            System.out.println("Enter the opponents grid coordinates");
-                            int StrikePosX = 0;
-                            int StrikePosY = 0;
-                            while(!(gameGrid[StrikePosY][StrikePosX] == 'C')) 
-                            {
-                                System.out.println("Enter X coordinate");
-                                StrikePosX = console.nextInt();
-                                while ((StrikePosX < 1) || (StrikePosX > gridSize)) 
-                                {
-                                    System.out.println("Enter X coordinate");
-                                    StrikePosX = console.nextInt();
-                                }
-
-                                System.out.println("Enter Y coordinate");
-                                StrikePosY = console.nextInt();
-                                while ((StrikePosY < 1) || (StrikePosY > gridSize)) 
-                                {
-                                    System.out.println("Enter Y coordinate");
-                                    StrikePosY = console.nextInt();
-                                }
-                                System.out.println("Move: (" + StrikePosX + "," + StrikePosY + ")");
-                                StrikePosX = (StrikePosX - 1)*2;
-                                StrikePosY = (StrikePosY - 1)*2;
-                            }
-                            placePiece(gameGrid, StrikePosX, StrikePosY, "player");
-                            valid = true;
-                            break;
-                        case "n":
-                        case "N":
-                        case "NO":
-                        case "No":
-                            System.out.println("You selected No.");
-                            valid = true;
-                            break;
-                        default:
-                            System.out.println("Invalid Option.");
-                    }
-                }while(! valid);
+                moveSabotage3(); // Option 3
                 break; 
             default:
                 System.out.println("Select an option between 1 and 3.");
+                moveSabotage();
         }
     }
 
-    public void moveStrike() // Move - Striking the computer
+    public void moveSabotage1() // Player Move - Sabotage option 1
+    {
+        low = 500;
+        high = 1500;
+        int cost = rand.nextInt(high-low) + low;
+        System.out.println("This will cost you: $" + cost);
+        boolean valid = false;
+        do {
+            System.out.print("Do you accept? Yes or No: ");
+            String ans = console.next();
+            switch (ans)
+            {
+                case "Y":
+                case "y":
+                case "YES":
+                case "Yes":
+                case "ok":
+                case "Ok":
+                case "OK":
+                case "Okay":
+                case "OKAY":
+                    playerCoin = playerCoin - cost;
+                    System.out.println("New coin total: $" + playerCoin);
+                    pcAtt = pcAtt - 2;
+                    System.out.println("Opponents Attack: " + pcAtt);
+                    valid = true;
+                    break;
+                case "n":
+                case "N":
+                case "NO":
+                case "No":
+                    System.out.println("You selected No.");
+                    valid = true;
+                    break;
+                default:
+                    System.out.println("Invalid Option.");
+            }
+        }while(! valid);
+    }
+
+    public void moveSabotage2() // Player Move - Sabotage option 2
+    {
+        boolean valid = false;
+        low = 500;
+        high = 1500;
+        int cost = rand.nextInt(high-low) + low;
+        System.out.println("This will cost you: $" + cost);
+        do
+        {
+            System.out.print("Do you accept? Yes or No: ");
+            String ans2 = console.next();
+            switch (ans2)
+            {
+                case "Y":
+                case "y":
+                case "YES":
+                case "Yes":
+                case "ok":
+                case "Ok":
+                case "OK":
+                case "Okay":
+                case "OKAY":
+                    playerCoin = playerCoin - cost;
+                    System.out.println("New coin total: $" + playerCoin);
+                    pcDef = pcDef - 2;
+                    System.out.println("Opponents Defence: " + pcDef );
+                    valid = true;
+                    break;
+                case "n":
+                case "N":
+                case "NO":
+                case "No":
+                    System.out.println("You selected No.");
+                    //inputPlayerTurn();
+                    valid = true;
+                    break;
+                default:
+                    System.out.println("Invalid Option");
+            }
+        }while(! valid);
+    }
+
+    public void moveSabotage3() // Player Move - Sabotage option 3
+    {
+        boolean valid = false;
+        low = 1000;
+        high = 2500;
+        int cost = rand.nextInt(high-low) + low;
+        System.out.println("This will cost you: $" + cost);
+        do
+        {
+            System.out.print("Do you accept? Yes or No: ");
+            String ans3 = console.next();
+            switch (ans3)
+            {
+                case "Y":
+                case "y":
+                case "YES":
+                case "Yes":
+                case "ok":
+                case "Ok":
+                case "OK":
+                case "Okay":
+                case "OKAY":
+                    playerCoin = playerCoin - cost;
+                    System.out.println("New coin total: $" + playerCoin);
+                    //select coorinates
+                    System.out.println("Enter the opponents grid coordinates");
+                    int StrikePosX = 0;
+                    int StrikePosY = 0;
+                    while(!(gameGrid[StrikePosY][StrikePosX] == 'C'))
+                    {
+                        System.out.println("Enter X coordinate");
+                        StrikePosX = console.nextInt();
+                        while ((StrikePosX < 1) || (StrikePosX > gridSize))
+                        {
+                            System.out.println("Enter X coordinate");
+                            StrikePosX = console.nextInt();
+                        }
+
+                        System.out.println("Enter Y coordinate");
+                        StrikePosY = console.nextInt();
+                        while ((StrikePosY < 1) || (StrikePosY > gridSize))
+                        {
+                            System.out.println("Enter Y coordinate");
+                            StrikePosY = console.nextInt();
+                        }
+                        System.out.println("Move: (" + StrikePosX + "," + StrikePosY + ")");
+                        StrikePosX = (StrikePosX - 1)*2;
+                        StrikePosY = (StrikePosY - 1)*2;
+                    }
+                    placePiece(gameGrid, StrikePosX, StrikePosY, "player");
+                    valid = true;
+                    break;
+                case "n":
+                case "N":
+                case "NO":
+                case "No":
+                    System.out.println("You selected No.");
+                    valid = true;
+                    break;
+                default:
+                    System.out.println("Invalid Option.");
+            }
+        }while(! valid);
+    }
+
+    public void moveStrike() // Player Move - Striking the computer
     {
         checkPath();
         if(colMade == true)
@@ -616,10 +680,25 @@ public class Grid
     {
         System.out.println("Player   " + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins: $" + playerCoin);
     }
+    /*   // More stats
+        public String statsDisplay() // Display player stats
+    {
+        player.toString();
+        String name = player.toString();
+        return "Player " + name + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins $" + playerCoin + "   Captured " + captured+ "   Lost " + lost + "\n";
+    }
+     */
+
 
     public void statsDisplayPC()
     {
         System.out.println("Computer Lives: " + pcHealth + "   Attack: " + pcAtt + "   Defence: " + pcDef + "   Coins: $" + pcCoin);
     }
+    /*  //// updated stats
+    public String statsDisplayPC() // Display PC stats
+    {
+        return "Computer Lives: " + pcHealth + "   Attack: " + pcAtt + "   Defence: " + pcDef + "   Coins: $" + pcCoin + "   Captured " + capturedPC+ "   Lost " + lostPC +"\n";
+    }
+     */
 }
 

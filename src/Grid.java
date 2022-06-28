@@ -268,24 +268,24 @@ public class Grid
     public void inputGridSize() // Sets Grid Size
     {
         Validation valid = new Validation();
-        System.out.println("Input a Grid Size from 3 - 10");
+        System.out.println("Input a Grid Size from 3 - 10:");
         gridSize = console.nextInt();
         if ((gridSize < 3 ) || (gridSize > 10))
         {
-            System.out.println("please enter a valid Grid Size from 3 - 10");
+            System.out.println("Please enter a valid Grid Size from 3 - 10:");
             gridSize = console.nextInt();
         }
         else if ((gridSize >= 3 ) || (gridSize <= 10))
         {
-            System.out.println("Grid Size: " + gridSize + "x" + gridSize);
+            System.out.println("Grid Size: " + gridSize + " x " + gridSize);
         }
     }
 
     public void inputPlayerTurn() 
     {
-        System.out.println("Press 1: Capture a Grid");
-        System.out.println("Press 2: Sabotage the enemy");
-        System.out.println("Press 3: Direct Strike a heart");
+        System.out.println("Press 1: Capture a Grid.");
+        System.out.println("Press 2: Sabotage the enemy.");
+        System.out.println("Press 3: Direct Strike a heart.");
         int playerTurn = console.nextInt();
         if (playerTurn == 1) // Capture Grid
         {   
@@ -299,7 +299,7 @@ public class Grid
         {
             moveStrike();
         }else
-            System.out.println("Enter a valid move");
+            System.out.println("Enter a valid move:");
     }
 
     public void makeGrid() // Assign values to make matrix
@@ -333,28 +333,28 @@ public class Grid
         printGridBoard(gameGrid);
     }
    
-    public void moveCapture()
+    public void moveCapture() // MOVE - Capture a grid.
     {
         diceRoll();
         tempAtt = die1 + die2 + die3 + playerAtt;
-        System.out.println("You rolled: " + die1 + ", " + die2 + " & " + die3 + ", your Attack total is: " + tempAtt); 
+        System.out.println("You rolled: " + die1 + ", " + die2 + ", & " + die3 + ", your Attack total is: " + tempAtt);
         tempDef = dieDef1 + dieDef2 + pcDef;
-        System.out.println("Opponents roll: " + dieDef1 + ", & " + dieDef2 + ", their total Defence is: " + tempDef); 
+        System.out.println("Opponent rolled: " + dieDef1 + ", & " + dieDef2 + ", their total Defence is: " + tempDef);
         if(tempAtt > tempDef)
         {
-            System.out.println("Enter X coordinate (1-" + gridSize + ")");
+            System.out.println("Enter X coordinate (1 - " + gridSize + "):");
             int playerPosX = console.nextInt();
             while ((playerPosX < 1) || (playerPosX > gridSize)) 
             {
-                System.out.println("Enter X coordinate (1-" + gridSize + ")");
+                System.out.println("Enter X coordinate (1 - " + gridSize + "):");
                 playerPosX = console.nextInt();
             }
 
-            System.out.println("Enter Y coordinate (1-" + gridSize + ")");
+            System.out.println("Enter Y coordinate (1 - " + gridSize + "):");
                 int playerPosY = console.nextInt();
             while ((playerPosY < 1) || (playerPosY > gridSize)) 
             {
-                System.out.println("Enter Y coordinate (1-" + gridSize + ")");
+                System.out.println("Enter Y coordinate (1 - " + gridSize + "):");
                 playerPosY = console.nextInt();
             }
             System.out.println("Move: (" + playerPosX + "," + playerPosY + ")");
@@ -386,11 +386,11 @@ public class Grid
             System.out.println("Their Defence was too strong!");
         }
     }
-    public void moveSabotage()
+    public void moveSabotage() // MOVE - Sabotage computer
     {
-        System.out.println("Press 1: Decrease the Opponent's Attack by 2");
-        System.out.println("Press 2: Decrease the Opponent's Defence by 2");
-        System.out.println("Press 3: Sabotage an Opponent's Grid");
+        System.out.println("Press 1: Decrease the opponent's Attack by 2.");
+        System.out.println("Press 2: Decrease the opponent's Defence by 2.");
+        System.out.println("Press 3: Steal a Grid space.");
         int sabMove = console.nextInt();
         switch(sabMove)
         {
@@ -401,12 +401,13 @@ public class Grid
                 System.out.println("This will cost you: $" + cost); 
                 boolean valid = false;
                 do {
-                    System.out.print("Do you accept yes or no: ");
+                    System.out.print("Do you accept? Yes or No: ");
                     String ans = console.next();
                     switch (ans)
                     {
                         case "Y":
                         case "y":
+                        case "YES":
                         case "Yes":
                             playerCoin = playerCoin - cost;
                             System.out.println("New coin total: $" + playerCoin); 
@@ -416,12 +417,13 @@ public class Grid
                             break;
                         case "n":
                         case "N":
+                        case "NO":
                         case "No":
                             System.out.println("You selected No.");
                             valid = true;
                             break;
                         default:
-                            System.out.println("Invalid Option");
+                            System.out.println("Invalid Option.");
                     }
                 }while(! valid);
                 break;
@@ -433,12 +435,13 @@ public class Grid
                 System.out.println("This will cost you: $" + cost); 
                 do 
                 {
-                    System.out.print("Do you accept yes or no: ");
+                    System.out.print("Do you accept? Yes or No: ");
                     String ans2 = console.next();
                     switch (ans2)
                     {
                         case "Y":
                         case "y":
+                        case "YES":
                         case "Yes":
                             playerCoin = playerCoin - cost;
                             System.out.println("New coin total: $" + playerCoin); 
@@ -448,6 +451,7 @@ public class Grid
                             break;
                         case "n":
                         case "N":
+                        case "NO":
                         case "No":
                             System.out.println("You selected No.");
                             //inputPlayerTurn();
@@ -466,17 +470,18 @@ public class Grid
                 System.out.println("This will cost you: $" + cost); 
                 do 
                 {
-                    System.out.print("Do you accept yes or no: ");
+                    System.out.print("Do you accept? Yes or No: ");
                     String ans3 = console.next();
                     switch (ans3)
                     {
                         case "Y":
                         case "y":
+                        case "YES":
                         case "Yes":
                             playerCoin = playerCoin - cost;
                             System.out.println("New coin total: $" + playerCoin); 
                             //select coorinates 
-                            System.out.println("Enter opponents grid coordinates");                             
+                            System.out.println("Enter the opponents grid coordinates");
                             int StrikePosX = 0;
                             int StrikePosY = 0;
                             while(!(gameGrid[StrikePosY][StrikePosX] == 'C')) 
@@ -505,21 +510,22 @@ public class Grid
                             break;
                         case "n":
                         case "N":
+                        case "NO":
                         case "No":
                             System.out.println("You selected No.");
                             valid = true;
                             break;
                         default:
-                            System.out.println("Invalid Option");
+                            System.out.println("Invalid Option.");
                     }
                 }while(! valid);
                 break; 
             default:
-                System.out.println("Select an option between 1 and 3");
+                System.out.println("Select an option between 1 and 3.");
         }
     }
 
-    public void moveStrike()
+    public void moveStrike() // Move - Striking the computer
     {
         checkPath();
         if(colMade == true)
@@ -531,12 +537,12 @@ public class Grid
             System.out.println("You're yet to reach enemy lines. Make another move.");
     }
     
-    public void placePiece(char[][] gameGrid, int posX, int posY,  String user)
+    public void placePiece(char[][] gameGrid, int posX, int posY,  String user) // Get user, place Character piece
     {
         if(user.equals("player"))
         {
             symbol = 'P';          
-            int posCount = 0;
+        //    int posCount = 0;         // cant recall what i added this for
         }  
         else if (user.equals("pc"))
         {
@@ -546,9 +552,9 @@ public class Grid
         printGridBoard(gameGrid);
     }
 
-    public void printGridBoard(char[][] gameGrid)
+    public void printGridBoard(char[][] gameGrid)  // Display grid
     {
-        switch(gridSize)
+        switch(gridSize)  // Adds numbers to X axis
         {
             case 3:
                 System.out.println(" 1 2 3 X");
@@ -577,23 +583,26 @@ public class Grid
             default:
                 break;
         }
-        int counter = 1; // Adds Y column
+
+        int counter = 1;  // Counts rows for Y column
         char space = ' '; // Adds space between Y numbers
-        int rowNum = 1; // Row as an int
-        for(char[] row : gameGrid)
+        int rowNum = 1;   // Row as an int
+
+        for(char[] row : gameGrid) // Print Y column and grid squares
         {
             rowNum++;
-            if(rowNum % 2 == 0 )
+            if(rowNum % 2 == 0 )            // If even numbered row, print number
             {
                 System.out.print(counter);
                 counter++;
-            }else
-                System.out.print(space); 
-            for(char c : row)
+            }else                           // If odd numbered row, blank space
+                System.out.print(space);
+
+            for(char c : row)               // Print grid squares
             {
                 System.out.print(c); 
             }
-            System.out.println(); 
+            System.out.println();
         }
         System.out.println("Y");
     }
@@ -603,7 +612,7 @@ public class Grid
         this.gridSize = gridSize;
     }
 
-        public void statsDisplay()
+    public void statsDisplay()
     {
         System.out.println("Player   " + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins: $" + playerCoin);
     }

@@ -7,7 +7,7 @@ public class Field
 {
     private Instructions instructions;
     private Player player;
-    private Grid grids;
+    private Grid grid;
     private ReadFile file;
    // private final String outputFile = "outcome.txt";
     private String name;
@@ -20,7 +20,7 @@ public class Field
         name = "";
         instructions = new Instructions();
         player = new Player();
-        grids = new Grid();
+        grid = new Grid();
         file = new ReadFile();
     }
 
@@ -28,7 +28,7 @@ public class Field
     {
         this.instructions = instructions;
         this.player = player;
-        this.grids = grids;
+        this.grid = grids;
         this.file = file;
     }
 
@@ -63,12 +63,12 @@ public class Field
         name = player.toString();
                                      // Display Stats
         System.out.println("\nP = " + name + ", C = Computer");
-        grids.statsDisplay();
-        grids.statsDisplayPC();
+        grid.statsDisplay();
+        grid.statsDisplayPC();
         System.out.print("\n");
 
-        grids.inputGridSize();       // Create game size
-        grids.makeGrid();            // Make grid
+        grid.inputGridSize();       // Create game size
+        grid.makeGrid();            // Make grid
       //  grids.printGridBoard();
     }
     public void startGame()
@@ -77,17 +77,29 @@ public class Field
         intro();
         while(true)
         {
-            System.out.println("----------------------Java Field-----------------------");
-            grids.statsDisplay();
-            grids.inputPlayerTurn();
-            grids.checkWinner();
+            playerTurn(); // Players Turn
 
-            grids.statsDisplayPC();
-            grids.computerTurn();
-            grids.checkWinner();
+            grid.checkWinner();
+
+            grid.statsDisplayPC();
+            computerTurn();// Computers turn
+            grid.checkWinner();
         }
        // writeFile();
        // printStats();
+    }
+    public void playerTurn()
+    {
+        System.out.println("\n-----------------------Player Turn------------------------");
+        grid.statsDisplay();
+        grid.inputPlayerTurn();
+    }
+
+    public void computerTurn()
+    {
+        System.out.println("\n---------------------Computer Turn------------------------");
+        grid.statsDisplayPC();
+        grid.computerTurn();
     }
 
     /*

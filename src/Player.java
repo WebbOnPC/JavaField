@@ -36,7 +36,7 @@ public class Player
             {
                 try
                 {
-                    System.out.println("Please enter your name (3-12 characters):");
+                    System.out.println("\nPlease enter your name (3-12 characters):");
                     playerName = console.nextLine().trim();
                     flag = false;
                 }
@@ -63,18 +63,4 @@ public class Player
     {
         return playerName;
     }
-
-
-
-    /*
-    //all of this must be moved to field.java ... but why?
-    public static void createUsername()
-    {
-        Scanner console = new Scanner(System.in);
-        System.out.println("Please enter your name:");
-        String playerName = console.nextLine();
-        System.out.println("Welcome: " + playerName);
-    }
-
-     */
 }

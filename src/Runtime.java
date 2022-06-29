@@ -32,7 +32,7 @@ public class Runtime
 
     public static void main(String[] args)
     {
-         Runtime start = new Runtime();
+        Runtime start = new Runtime();
         /*
         ReadFile r = new ReadFile();
 
@@ -67,21 +67,30 @@ public class Runtime
 
         grid.inputGridSize();       // Create game size
         grid.makeGrid();            // Make grid
-      //  grids.printGridBoard();
+       // grid.printGridBoard();
+       // grid.printGridBoard(gameGrid);
     }
     public void startGame()
     {
        // file.writeFile();
         intro();
-        while(true)
+        while(true) // Game running
         {
             playerTurn(); // Players Turn
+            String result = grid.checkWinner();
+            if(result.length() > 0)
+            {
+                System.out.println(result);
+                break;
+            }
 
-            grid.checkWinner();
-
-            grid.statsDisplayPC();
             computerTurn();// Computers turn
-            grid.checkWinner();
+            result = grid.checkWinner();
+            if(result.length() > 0)
+            {
+                System.out.println(result);
+                break;
+            }
         }
        // writeFile();
        // printStats();
@@ -91,6 +100,7 @@ public class Runtime
         System.out.println("\n-----------------------Player Turn------------------------");
         grid.statsDisplay();
         grid.inputPlayerTurn();
+       // grid.checkWinner();
     }
 
     public void computerTurn()
@@ -98,6 +108,7 @@ public class Runtime
         System.out.println("\n---------------------Computer Turn------------------------");
         grid.statsDisplayPC();
         grid.computerTurn();
+       // grid.checkWinner();
     }
 
     /*

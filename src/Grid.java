@@ -17,8 +17,6 @@ public class Grid
     private int pcAtt;
     private int playerDef;
     private int pcDef;
-    private int low;
-    private int high;
     private Random rand;
 
     private boolean colMade;
@@ -63,8 +61,7 @@ public class Grid
         rand = new Random();
         colMade = false;
 
-         low = 1;
-         high = 7;
+
          tempDef = 0;
          tempAtt = 0;
          die1 = 0;
@@ -90,6 +87,19 @@ public class Grid
     public int getGridSize()
     {
         return this.gridSize;
+    }
+
+    public void continueOn() // Press anything to continue
+    {
+        try
+        {
+            System.out.println("Press Enter to continue.");
+            System.in.read();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Please press Enter");
+        }
     }
 
     public String checkPath()
@@ -128,16 +138,16 @@ public class Grid
     }
 
     public String checkWinner() // Check if we have a winner
-    {   System.out.println("checking winner");
+    {
         if(pcHealth == 0)
         {
-            System.out.println("YOU ARE WINNER!");
-            return "Congratulations you win!";
+            System.out.println("---------------------------------------------------------\n");
+            return "Congratulations you win! XD";
         }
         else if (playerHealth == 0)
         {
-            System.out.println("You lost!");
-            return "The Computer wins!";
+            System.out.println("---------------------------------------------------------\n");
+            return "The Computer won.. -_-";
         }
         return "";
     }
@@ -161,9 +171,11 @@ public class Grid
             }
             placePiece(gameGrid, pcPosX, pcPosY, "pc");
             System.out.println("Computer captured a Grid!");
+            continueOn();
         }
         else
-            System.out.println("Capture failed!"); 
+            System.out.println("Capture failed!");
+            continueOn();
     }
 
     public void computerStrike() // Computer Move - Strike Health
@@ -173,11 +185,13 @@ public class Grid
          if(colMade == true) // If player has completed a path
         {
             playerHealth = playerHealth - 1;
-            System.out.println("They had successfully Striked");
+            System.out.println("They have successfully Striked");
             System.out.println("Your Lives: " + playerHealth);
+            continueOn();
         }
         else
             System.out.println("They failed to Strike your Lives");
+            continueOn();
     }
 
     public void computerSabotage() // Computer Move - Sabotage
@@ -200,7 +214,8 @@ public class Grid
                 pcCoin = pcCoin - cost;
                 System.out.println("They're reducing your Attack");
                 playerAtt = playerAtt - 2;
-                System.out.println("Your Attack: " + playerAtt); 
+                System.out.println("Your Attack: " + playerAtt);
+                continueOn();
                 break;
             case 5:
             case 6:
@@ -211,6 +226,7 @@ public class Grid
                 System.out.println("They're reducing your Defence");
                 playerDef = playerDef - 2;
                 System.out.println("Your Defence: " + playerDef );
+                continueOn();
                 break;
             case 9:
             case 10: // Attack Players Grid
@@ -232,6 +248,7 @@ public class Grid
                     System.out.println("Computer captured a Grid.");
                     ++lost;
                     placePiece(gameGrid, pcPosX, pcPosY, "pc");
+                    continueOn();
                 }
                 else
                     computerCapture(); // Tries to capture instead
@@ -269,11 +286,11 @@ public class Grid
 
     public void diceRoll() // Dice
     {
-        die1 = rand.nextInt(high-low) + low;
-        die2 = rand.nextInt(high-low) + low;
-        die3 = rand.nextInt(high-low) + low;
-        dieDef1 = rand.nextInt(high-low) + low;
-        dieDef2 = rand.nextInt(high-low) + low;
+        die1 = rand.nextInt(6) + 1;
+        die2 = rand.nextInt(6) + 1;
+        die3 = rand.nextInt(6) + 1;
+        dieDef1 = rand.nextInt(6) + 1;
+        dieDef2 = rand.nextInt(6) + 1;
     }
 
     public void inputGridSize() // Set Grid Size
@@ -444,9 +461,7 @@ public class Grid
 
     public void moveSabotage1() // Player Move - Sabotage option 1
     {
-        low = 500;
-        high = 1500;
-        int cost = rand.nextInt(high-low) + low;
+        int cost = rand.nextInt(1000) + 500;
         System.out.println("This will cost you: $" + cost);
         boolean valid = false;
         do {
@@ -485,9 +500,7 @@ public class Grid
     public void moveSabotage2() // Player Move - Sabotage option 2
     {
         boolean valid = false;
-        low = 500;
-        high = 1500;
-        int cost = rand.nextInt(high-low) + low;
+        int cost = rand.nextInt(1000) + 500;
         System.out.println("This will cost you: $" + cost);
         do
         {
@@ -527,9 +540,7 @@ public class Grid
     public void moveSabotage3() // Player Move - Sabotage option 3
     {
         boolean valid = false;
-        low = 1000;
-        high = 2500;
-        int cost = rand.nextInt(high-low) + low;
+        int cost = rand.nextInt(1500) + 1000;
         System.out.println("This will cost you: $" + cost);
         do
         {

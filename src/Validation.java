@@ -23,4 +23,17 @@ public class Validation
             withinRange = true;
         return withinRange;
     }
+
+    public void continueOn() // Press anything to continue
+    {
+        try
+        {
+            System.out.println("Press Enter to continue.");
+            System.in.read();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Please press Enter");
+        }
+    }
 }

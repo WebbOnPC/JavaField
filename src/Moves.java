@@ -1,13 +1,10 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Grid
+public class Moves
 {
-    private int gridSize;
-    public char gameGrid[][];
     int playerPos = 0;
     private int size;
-    private char symbol;
     private Scanner console;
     private int playerHealth;
     private int pcHealth;
@@ -19,6 +16,8 @@ public class Grid
     private int pcDef;
     private Random rand;
 
+    private MakeGrid makeGrid;
+
     private boolean colMade;
 
     // Stats
@@ -26,8 +25,6 @@ public class Grid
     private int lost;     // Grids lost
     private int capturedPC; // PC captured grids
     private int lostPC; // PC grids lost
-
-  //  private int howManyPs;
 
     private    int tempDef;
     private    int tempAtt;
@@ -37,22 +34,14 @@ public class Grid
     private    int dieDef1;
     private     int dieDef2;
 
-  //   ArrayList<Integer> playerPositions = new ArrayList<Integer>();
-    //static ArrayList<Integer> pcPositions = new ArrayList<Integer>();
-   // static ArrayList<Integer> pcPositionsX = new ArrayList<Integer>();
- //   static ArrayList<Integer> pcPositionsY = new ArrayList<Integer>();
-   //  ArrayList<ArrayList<Integer>> playerPositions = new ArrayList<Integer>();
-
-    public Grid()
+    public Moves()
     {
         console = new Scanner(System.in);
-        gridSize = 3;
-        symbol = ' ';
         size = 0;
-        gameGrid = new char[size][size];
         playerHealth = 3;
         pcHealth = 3;
         playerCoin = 3000;
+        makeGrid = new MakeGrid();
         pcCoin = 10000;
         playerAtt = 5;
         pcAtt = 5;
@@ -60,8 +49,6 @@ public class Grid
         pcDef = 7;
         rand = new Random();
         colMade = false;
-
-
          tempDef = 0;
          tempAtt = 0;
          die1 = 0;
@@ -71,7 +58,7 @@ public class Grid
         dieDef2 = 0;
     }
 
-    public Grid(int playerHealth, int pcHealth, int playerCoin, int pcCoin, int playerAtt, int pcAtt, int playerDef, int pcDef, int gridSize)
+    public Moves(int playerHealth, int pcHealth, int playerCoin, int pcCoin, int playerAtt, int pcAtt, int playerDef, int pcDef, MakeGrid makeGrid)
     {
         this.playerHealth = playerHealth;
         this.pcHealth = pcHealth;
@@ -81,40 +68,23 @@ public class Grid
         this.pcAtt = pcAtt;
         this.playerDef = playerDef;
         this.pcDef = pcDef;
-        this.gridSize = gridSize;
+        this.makeGrid = makeGrid;
     }
 
-    public int getGridSize()
-    {
-        return this.gridSize;
-    }
-
-    public void continueOn() // Press anything to continue
-    {
-        try
-        {
-            System.out.println("Press Enter to continue.");
-            System.in.read();
-        }
-        catch (Exception e)
-        {
-            System.out.println("Please press Enter");
-        }
-    }
-
-    public String checkPath()
+    public String checkPath()   // Checks path to see if can Strike
     {    
         int howManyPs = 0;
         int tempSizeJ = 0;
         int tempSizeI = 0;
-        for (int i = 0; i < gridSize; i++)
+        for (int i = 0; i < makeGrid.getGridSize(); i++)
         {
-            for (int j = 0; j < gridSize; j++)
+            for (int j = 0; j < makeGrid.getGridSize(); j++)
             {
-                if (gameGrid[tempSizeJ][tempSizeI] == 'P')
+                char grids[][] = makeGrid.getGameGrid();
+                if (grids[tempSizeJ][tempSizeI] == 'P')
                 {
                     howManyPs = howManyPs + 1;
-                    if (howManyPs == gridSize)
+                    if (howManyPs == makeGrid.getGridSize())
                     {
                         colMade = true;
                         howManyPs = 0;
@@ -162,36 +132,35 @@ public class Grid
         System.out.println("Your roll: " + dieDef1 + ", & " + dieDef2 + ", your total Defence is: " + tempDef); 
         if(tempAtt > tempDef)
         {
-            int pcPosX = rand.nextInt(gridSize)*2;
-            int pcPosY = rand.nextInt(gridSize)*2;
-            while(gameGrid[pcPosY][pcPosX] == 'C')
+            int pcPosX = rand.nextInt(makeGrid.getGridSize())*2;
+            int pcPosY = rand.nextInt(makeGrid.getGridSize())*2;
+
+            char grids[][] = makeGrid.getGameGrid();
+            while(grids[pcPosY][pcPosX] == 'C')
             {
-                pcPosX = rand.nextInt(gridSize)*2;
-                pcPosY = rand.nextInt(gridSize)*2;
+                pcPosX = rand.nextInt(makeGrid.getGridSize())*2;
+                pcPosY = rand.nextInt(makeGrid.getGridSize())*2;
             }
-            placePiece(gameGrid, pcPosX, pcPosY, "pc");
+
+            makeGrid.placePiece(pcPosX, pcPosY, "pc");
             System.out.println("Computer captured a Grid!");
-            continueOn();
         }
         else
             System.out.println("Capture failed!");
-            continueOn();
     }
 
     public void computerStrike() // Computer Move - Strike Health
     {
-         System.out.println("PC STRIKE");
+         // System.out.println("PC STRIKE");
          checkPath();
          if(colMade == true) // If player has completed a path
         {
             playerHealth = playerHealth - 1;
-            System.out.println("They have successfully Striked");
+            System.out.println("They have successfully striked!");
             System.out.println("Your Lives: " + playerHealth);
-            continueOn();
         }
         else
             System.out.println("They failed to Strike your Lives");
-            continueOn();
     }
 
     public void computerSabotage() // Computer Move - Sabotage
@@ -215,7 +184,6 @@ public class Grid
                 System.out.println("They're reducing your Attack");
                 playerAtt = playerAtt - 2;
                 System.out.println("Your Attack: " + playerAtt);
-                continueOn();
                 break;
             case 5:
             case 6:
@@ -226,7 +194,6 @@ public class Grid
                 System.out.println("They're reducing your Defence");
                 playerDef = playerDef - 2;
                 System.out.println("Your Defence: " + playerDef );
-                continueOn();
                 break;
             case 9:
             case 10: // Attack Players Grid
@@ -238,17 +205,19 @@ public class Grid
                     pcCoin = pcCoin - cost;
                     System.out.println("Costing them: " + pcCoin);
 
-                    int pcPosX = rand.nextInt(gridSize)*2;
-                    int pcPosY = rand.nextInt(gridSize)*2;
-                    while(!(gameGrid[pcPosY][pcPosX] == 'P'))
+                    int pcPosX = rand.nextInt(makeGrid.getGridSize())*2;
+                    int pcPosY = rand.nextInt(makeGrid.getGridSize())*2;
+
+                    char grids[][] = makeGrid.getGameGrid();
+                    while(!(grids[pcPosY][pcPosX] == 'P'))
                     {
-                        pcPosX = rand.nextInt(gridSize)*2;
-                        pcPosY = rand.nextInt(gridSize)*2;
+                        pcPosX = rand.nextInt(makeGrid.getGridSize())*2;
+                        pcPosY = rand.nextInt(makeGrid.getGridSize())*2;
                     }
                     System.out.println("Computer captured a Grid.");
                     ++lost;
-                    placePiece(gameGrid, pcPosX, pcPosY, "pc");
-                    continueOn();
+                   // placePiece(gameGrid, pcPosX, pcPosY, "pc");
+                    makeGrid.placePiece(pcPosX, pcPosY, "pc");
                 }
                 else
                     computerCapture(); // Tries to capture instead
@@ -293,43 +262,6 @@ public class Grid
         dieDef2 = rand.nextInt(6) + 1;
     }
 
-    public void inputGridSize() // Set Grid Size
-    {
-        Validation valid = new Validation();
-        System.out.println("Input a Grid Size from 3 - 10:");
-        gridSize = console.nextInt();
-        if ((gridSize < 3 ) || (gridSize > 10))
-        {
-            System.out.println("Please enter a valid Grid Size from 3 - 10:");
-            gridSize = console.nextInt();
-        }
-        else if ((gridSize >= 3 ) || (gridSize <= 10))
-        {
-            System.out.println("Grid Size: " + gridSize + " x " + gridSize);
-        }
-        /*
-        boolean flag = true;
-        while ((gridSize < 3 ) || (gridSize > 10))
-        {
-            do
-            {
-                try
-                {
-                    System.out.println("Input a Grid Size from 3 - 10:");
-                    gridSize = Integer.parseInt(console.nextLine().trim());
-                    flag = false;
-                }
-                catch (Exception e)
-                {
-                    System.out.println("Integer only.");
-                }
-            }while(flag);
-        }
-        System.out.println("Grid Size: " + gridSize + "x" + gridSize + "\n");
-
-         */
-    }
-
     public void inputPlayerTurn() // Player Move
     {
         System.out.println("Press 1: Capture a Grid.");
@@ -352,86 +284,56 @@ public class Grid
         }
     }
 
-    public void makeGrid() // Assign values to make matrix
-    {
-        int newSize = gridSize;
-        int gameSize = newSize * 2;
-        size = gameSize-1;
-        gameGrid = new char[size][size];
-        for(int i=0; i < size; i++) // rows
-        {
-            for(int j=0; j < size; j++) // columns
-            {
-                gameGrid[i][j] = '|'; 
-            }
-        }
-        for(int i=0; i < size; i++) // rows
-        {
-            for(int j=0; j < size; j++) // columns
-            {
-                gameGrid[i][j] = ' '; 
-                j++;
-            }
-        }
-        for(int j=0; j < size; j++) // rows
-        {
-            for(int i=1; i < size; i++){
-                gameGrid[i][j] = '-'; 
-                i++;
-            }
-        }
-        printGridBoard(gameGrid);
-    }
-   
     public void moveCapture() // Player Move - Capture a grid.
     {
         diceRoll();
+
         tempAtt = die1 + die2 + die3 + playerAtt;
         System.out.println("You rolled: " + die1 + ", " + die2 + ", & " + die3 + ", your Attack total is: " + tempAtt);
         tempDef = dieDef1 + dieDef2 + pcDef;
         System.out.println("Opponent rolled: " + dieDef1 + ", & " + dieDef2 + ", their total Defence is: " + tempDef);
-        if(tempAtt > tempDef)
+        if(tempAtt > tempDef) // If Attack > Defence
         {
-            System.out.println("Enter X coordinate (1 - " + gridSize + "):");
+            System.out.println("Enter X coordinate (1 - " + makeGrid.getGridSize() + "):"); // Get X coord
             int playerPosX = console.nextInt();
-            while ((playerPosX < 1) || (playerPosX > gridSize)) 
+            while ((playerPosX < 1) || (playerPosX > makeGrid.getGridSize()))
             {
-                System.out.println("Enter X coordinate (1 - " + gridSize + "):");
+                System.out.println("Enter X coordinate (1 - " + makeGrid.getGridSize() + "):");
                 playerPosX = console.nextInt();
             }
 
-            System.out.println("Enter Y coordinate (1 - " + gridSize + "):");
+            System.out.println("Enter Y coordinate (1 - " + makeGrid.getGridSize() + "):"); // Get Y coord
                 int playerPosY = console.nextInt();
-            while ((playerPosY < 1) || (playerPosY > gridSize)) 
+            while ((playerPosY < 1) || (playerPosY > makeGrid.getGridSize()))
             {
-                System.out.println("Enter Y coordinate (1 - " + gridSize + "):");
+                System.out.println("Enter Y coordinate (1 - " + makeGrid.getGridSize() + "):");
                 playerPosY = console.nextInt();
             }
             System.out.println("Move: (" + playerPosX + "," + playerPosY + ")");
-            playerPosX = (playerPosX - 1)*2;
-            playerPosY = (playerPosY - 1)*2;
-
-            while(gameGrid[playerPosY][playerPosX] == 'P')
+            playerPosX = (playerPosX - 1)*2; // Line up X with grid
+            playerPosY = (playerPosY - 1)*2; // Line up Y with grid
+            /* // If grid is already taken - Needs loop update
+            while(gameGrid[playerPosY][playerPosX] == 'P') // If coordinates are already taken by player, ask again.
             {
                 System.out.println("Invalid Move");
-                while ((playerPosX < 1) || (playerPosX > gridSize)) 
+                while ((playerPosX < 1) || (playerPosX > makeGrid.getGridSize()))
                 {
-                    System.out.println("Enter X coordinate (1-" + gridSize + ")");
+                    System.out.println("Enter X coordinate (1-" + makeGrid.getGridSize() + ")");
                     playerPosX = console.nextInt();
                 }
 
-                while ((playerPosY < 1) || (playerPosY > gridSize)) 
+                while ((playerPosY < 1) || (playerPosY > makeGrid.getGridSize()))
                 {
-                    System.out.println("Enter Y coordinate (1-" + gridSize + ")");
+                    System.out.println("Enter Y coordinate (1-" + makeGrid.getGridSize() + ")");
                     playerPosY = console.nextInt();
                 }
                 System.out.println("Move: (" + playerPosX + "," + playerPosY + ")");
-                playerPosX = (playerPosX - 1)*2;
-                playerPosY = (playerPosY - 1)*2;
-                
+                playerPosX = (playerPosX - 1)*2; // Line up X with grid
+                playerPosY = (playerPosY - 1)*2; // Line up Y with grid
             }
-            placePiece(gameGrid, playerPosX, playerPosY, "player");
-        }else
+            */
+            makeGrid.placePiece(playerPosX, playerPosY, "player");
+        }else // Defence > Attack
         {
             System.out.println("Their Defence was too strong!");
         }
@@ -563,11 +465,12 @@ public class Grid
                     System.out.println("Enter the opponents grid coordinates");
                     int StrikePosX = 0;
                     int StrikePosY = 0;
-                    while(!(gameGrid[StrikePosY][StrikePosX] == 'C'))
+                    while(!(makeGrid.gameGrid[StrikePosY][StrikePosX] == 'C'))
+                     //   while(!(gameGrid[StrikePosY][StrikePosX] == 'C'))
                     {
                         System.out.println("Enter X coordinate");
                         StrikePosX = console.nextInt();
-                        while ((StrikePosX < 1) || (StrikePosX > gridSize))
+                        while ((StrikePosX < 1) || (StrikePosX > makeGrid.getGridSize()))
                         {
                             System.out.println("Enter X coordinate");
                             StrikePosX = console.nextInt();
@@ -575,7 +478,7 @@ public class Grid
 
                         System.out.println("Enter Y coordinate");
                         StrikePosY = console.nextInt();
-                        while ((StrikePosY < 1) || (StrikePosY > gridSize))
+                        while ((StrikePosY < 1) || (StrikePosY > makeGrid.getGridSize()))
                         {
                             System.out.println("Enter Y coordinate");
                             StrikePosY = console.nextInt();
@@ -584,7 +487,9 @@ public class Grid
                         StrikePosX = (StrikePosX - 1)*2;
                         StrikePosY = (StrikePosY - 1)*2;
                     }
-                    placePiece(gameGrid, StrikePosX, StrikePosY, "player");
+                    //placePiece(gameGrid, StrikePosX, StrikePosY, "player"); // original
+                    makeGrid.placePiece(StrikePosX, StrikePosY, "player"); // sorta worked but couldnt place
+
                     valid = true;
                     break;
                 case "n":
@@ -602,7 +507,7 @@ public class Grid
 
     public void moveStrike() // Player Move - Striking the computer
     {
-        checkPath();
+       // checkPath(); // add this method back in later
         if(colMade == true)
         {
             pcHealth = pcHealth - 1;
@@ -610,81 +515,6 @@ public class Grid
         }
         else
             System.out.println("You're yet to reach enemy lines. Make another move.");
-    }
-    
-    public void placePiece(char[][] gameGrid, int posX, int posY,  String user) // Get user, place Character piece
-    {
-        if(user.equals("player"))
-        {
-            symbol = 'P';          
-        //    int posCount = 0;         // cant recall what i added this for
-        }  
-        else if (user.equals("pc"))
-        {
-            symbol = 'C';
-        } 
-        gameGrid[posY][posX] = symbol;
-        printGridBoard(gameGrid);
-    }
-
-    public void printGridBoard(char[][] gameGrid)  // Display grid
-    {
-        switch(gridSize)  // Adds numbers to X axis
-        {
-            case 3:
-                System.out.println(" 1 2 3 X");
-                break;
-            case 4:
-                System.out.println(" 1 2 3 4 X");
-                break;
-            case 5:
-                System.out.println(" 1 2 3 4 5 X");
-                break;
-            case 6:
-                System.out.println(" 1 2 3 4 5 6 X");
-                break;
-            case 7:
-                System.out.println(" 1 2 3 4 5 6 7 X");
-                break;
-            case 8:
-                System.out.println(" 1 2 3 4 5 6 7 8 X");
-                break;
-            case 9:
-                System.out.println(" 1 2 3 4 5 6 7 8 9 X");
-                break;
-            case 10:
-                System.out.println(" 1 2 3 4 5 6 7 8 9 10 X");
-                break;
-            default:
-                break;
-        }
-
-        int counter = 1;  // Counts rows for Y column
-        char space = ' '; // Adds space between Y numbers
-        int rowNum = 1;   // Row as an int
-
-        for(char[] row : gameGrid) // Print Y column and grid squares
-        {
-            rowNum++;
-            if(rowNum % 2 == 0 )            // If even numbered row, print number
-            {
-                System.out.print(counter);
-                counter++;
-            }else                           // If odd numbered row, blank space
-                System.out.print(space);
-
-            for(char c : row)               // Print grid squares
-            {
-                System.out.print(c); 
-            }
-            System.out.println();
-        }
-        System.out.println("Y");
-    }
-
-    public void setGridSize(int gridSize)
-    {
-        this.gridSize = gridSize;
     }
 
     public void statsDisplay()
@@ -699,7 +529,6 @@ public class Grid
         return "Player " + name + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins $" + playerCoin + "   Captured " + captured+ "   Lost " + lost + "\n";
     }
      */
-
 
     public void statsDisplayPC()
     {

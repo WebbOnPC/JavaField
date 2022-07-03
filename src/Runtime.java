@@ -5,7 +5,9 @@ public class Runtime
 {
     private Instructions instructions;
     private Player player;
-    private Grid grid;
+    private Moves moves;
+    private MakeGrid makeGrid;
+    private Validation validation;
     private ReadFile file;
    // private final String outputFile = "outcome.txt";
     private String name;
@@ -18,15 +20,18 @@ public class Runtime
         name = "";
         instructions = new Instructions();
         player = new Player();
-        grid = new Grid();
+        moves = new Moves();
+        makeGrid = new MakeGrid();
+        validation = new Validation();
         file = new ReadFile();
     }
 
-    public Runtime(Player player, Instructions instructions, Grid grids, ReadFile file)
+    public Runtime(Player player, Instructions instructions, Moves moves, ReadFile file)
     {
         this.instructions = instructions;
         this.player = player;
-        this.grid = grids;
+        this.moves = moves;
+
         this.file = file;
     }
 
@@ -47,7 +52,7 @@ public class Runtime
         FileWriter fw = new FileWriter(file);
         PrintWritter pw = new PrintWriter(fw);
         writeFile();
-        pw.println(grids.statsDisplay());
+        pw.println(moves.statsDisplay());
 
         r.closeFileW();
        */
@@ -55,20 +60,21 @@ public class Runtime
     }
     public void intro()
     {
+         // Working Introduction, Character letter still needs to be updated
         Instructions.instructions(); // Call the list of player instructions
         player.createUsername();     // Ask for the players name
         player.display();
         name = player.toString();
                                      // Display Stats
         System.out.println("\nP = " + name + ", C = Computer");
-        grid.statsDisplay();
-        grid.statsDisplayPC();
+        moves.statsDisplay();
+        moves.statsDisplayPC();
         System.out.print("\n");
+                                     // Create Board
+        makeGrid.selectGridSize();   // Create game size
+        makeGrid.buildGrid();        // Make grid
+        validation.continueOn();
 
-        grid.inputGridSize();       // Create game size
-        grid.makeGrid();            // Make grid
-       // grid.printGridBoard();
-       // grid.printGridBoard(gameGrid);
     }
     public void startGame()
     {
@@ -77,15 +83,16 @@ public class Runtime
         while(true) // Game running
         {
             playerTurn(); // Players Turn
-            String result = grid.checkWinner();
+
+            String result = moves.checkWinner();
+
             if(result.length() > 0)
             {
                 System.out.println(result);
                 break;
             }
-
             computerTurn();// Computers turn
-            result = grid.checkWinner();
+            result = moves.checkWinner();
             if(result.length() > 0)
             {
                 System.out.println(result);
@@ -98,17 +105,19 @@ public class Runtime
     public void playerTurn()
     {
         System.out.println("\n-----------------------Player Turn------------------------");
-        grid.statsDisplay();
-        grid.inputPlayerTurn();
-       // grid.checkWinner();
+        moves.statsDisplay();
+        moves.inputPlayerTurn();
+        validation.continueOn();
+       // moves.checkWinner();
     }
 
     public void computerTurn()
     {
         System.out.println("\n---------------------Computer Turn------------------------");
-        grid.statsDisplayPC();
-        grid.computerTurn();
-       // grid.checkWinner();
+        moves.statsDisplayPC();
+        moves.computerTurn();
+        validation.continueOn();
+       // moves.checkWinner();
     }
 
     /*
@@ -135,8 +144,8 @@ public class Runtime
     {
         /*
         System.out.println("Final Scores \n");
-        String stat = grids.statsDisplay();
-        String statPC = grids.statsDisplayPC();
+        String stat = moves.statsDisplay();
+        String statPC = moves.statsDisplayPC();
         System.out.println(name);
         System.out.println(stat);
         System.out.println(statPC);

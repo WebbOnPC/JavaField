@@ -8,6 +8,8 @@ public class MakeGrid
     private int size;
     private Scanner console;
 
+    private Player player;
+
     private char symbol;
 
     public MakeGrid()
@@ -15,6 +17,7 @@ public class MakeGrid
         symbol = ' ';
         gameGrid = new char[size][size];
         console = new Scanner(System.in);
+        player = new Player();
     }
 
     public MakeGrid(int gridSize)
@@ -38,8 +41,6 @@ public class MakeGrid
         this.gameGrid = gameGrid;
     }
 
-
-
     public void selectGridSize() // Set gameboard Size
     {
         Validation valid = new Validation();
@@ -48,7 +49,6 @@ public class MakeGrid
         gridSize = console.nextInt();
         if ((gridSize >= 3 ) || (gridSize <= 10)) // is 3 - 10
         {
-            System.out.println("Grid Size: " + gridSize + " x " + gridSize);
             setGridSize(gridSize);
         }
         else if ((gridSize < 3 ) || (gridSize > 10)) // if not from 3 - 10
@@ -111,14 +111,23 @@ public class MakeGrid
 
    public void placePiece(int posX, int posY,  String user) // Get user, place Character piece
    {
+        String name = player.getPlayerName();
+        char P = name.charAt(0);            // Players character
         if(user.equals("player"))
         {
-            symbol = 'P';
+            symbol = P;
             //    int posCount = 0;         // for positions captured
         }
         else if (user.equals("pc"))
         {
-            symbol = 'C';
+            if(P != 'C')
+            {
+                symbol = 'C';
+            }
+            else
+            {
+                symbol = 'E';
+            }
         }
         gameGrid[posY][posX] = symbol;  // Places the symbol (character piece) on the board
         setGameGrid( gameGrid);

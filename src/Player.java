@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Player
 {
-    private String playerName;
+    private static String playerName;
 
     public Player()
     {
@@ -30,7 +30,7 @@ public class Player
     {
         boolean flag = true;
         Scanner console = new Scanner(System.in);
-        while((playerName.length() < 3)||(playerName.length() > 12))
+        while((playerName.length() < 3)||(playerName.length() > 12)) // Get name
         {
             do
             {
@@ -46,7 +46,26 @@ public class Player
                 }
             }while (flag);
         }
-        playerName = playerName.substring(0,1).toUpperCase() + playerName.substring(1).toLowerCase();
+
+        // Capitalise the first letter in the players names
+        playerName = " " + playerName; // To capitalise the very first letter
+        String f = "";
+        for (int i =0; i < playerName.length(); i++)
+        {
+            char ch = playerName.charAt(i);
+            if(ch == ' ')
+            {
+                 f = f + ch;
+                 i++;
+                 ch = playerName.charAt(i);
+                 f =  f + Character.toUpperCase(ch);
+            }
+            else
+            {
+                f = f + ch;
+            }
+        }
+        playerName = f.trim();
     }
 
     public String getPlayerName()

@@ -66,10 +66,22 @@ public class Runtime
         player.display();
         name = player.toString();
                                      // Display Stats
-        System.out.println("\nP = " + name + ", C = Computer");
+        String name = player.getPlayerName();
+        char P = name.charAt(0);
+        char C = 'C';
+        String CompName = "Computer";
+        if(P == 'C')
+        {
+            C = 'E';
+            CompName = "Enemy";
+        }
+        System.out.println(P + " = " + name + "  " + C + " = " + CompName);
+        validation.continueOn();
+
         moves.statsDisplay();
+        System.out.println("");
         moves.statsDisplayPC();
-        System.out.print("\n");
+        validation.continueOn();
                                      // Create Board
         makeGrid.selectGridSize();   // Create game size
         makeGrid.buildGrid();        // Make grid

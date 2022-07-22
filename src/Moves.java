@@ -17,6 +17,7 @@ public class Moves
     private Random rand;
 
     private MakeGrid makeGrid;
+    private Player player;
 
     private boolean colMade;
 
@@ -42,6 +43,7 @@ public class Moves
         pcHealth = 3;
         playerCoin = 3000;
         makeGrid = new MakeGrid();
+        player = new Player();
         pcCoin = 10000;
         playerAtt = 5;
         pcAtt = 5;
@@ -58,7 +60,7 @@ public class Moves
         dieDef2 = 0;
     }
 
-    public Moves(int playerHealth, int pcHealth, int playerCoin, int pcCoin, int playerAtt, int pcAtt, int playerDef, int pcDef, MakeGrid makeGrid)
+    public Moves(int playerHealth, int pcHealth, int playerCoin, int pcCoin, int playerAtt, int pcAtt, int playerDef, int pcDef, MakeGrid makeGrid, Player player)
     {
         this.playerHealth = playerHealth;
         this.pcHealth = pcHealth;
@@ -69,6 +71,7 @@ public class Moves
         this.playerDef = playerDef;
         this.pcDef = pcDef;
         this.makeGrid = makeGrid;
+        this.player = player;
     }
 
     public String checkPath()   // Checks path to see if can Strike
@@ -519,11 +522,12 @@ public class Moves
 
     public void statsDisplay()
     {
-        System.out.println("Player   " + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins: $" + playerCoin);
+        String name = player.getPlayerName();
+        System.out.println(name + "\nLives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins: $" + playerCoin);
     }
     /*   // More stats
         public String statsDisplay() // Display player stats
-    {
+    {w
         player.toString();
         String name = player.toString();
         return "Player " + name + "Lives: " + playerHealth + "   Attack: " + playerAtt + "   Defence: " + playerDef + "   Coins $" + playerCoin + "   Captured " + captured+ "   Lost " + lost + "\n";
@@ -532,7 +536,14 @@ public class Moves
 
     public void statsDisplayPC()
     {
-        System.out.println("Computer Lives: " + pcHealth + "   Attack: " + pcAtt + "   Defence: " + pcDef + "   Coins: $" + pcCoin);
+        String name = player.getPlayerName();
+        char P = name.charAt(0);
+        String CompName = "Computer";
+        if(P == 'C')
+        {
+            CompName = "Enemy";
+        }
+        System.out.println(CompName + " \nLives: " + pcHealth + "   Attack: " + pcAtt + "   Defence: " + pcDef + "   Coins: $" + pcCoin);
     }
     /*  //// updated stats
     public String statsDisplayPC() // Display PC stats
